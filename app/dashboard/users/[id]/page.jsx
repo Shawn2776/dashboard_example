@@ -1,14 +1,26 @@
+import { fetchUser } from "@/lib/data";
 import Image from "next/image";
 import React from "react";
 
-const UserPage = () => {
+const UserPage = async ({ params }) => {
+  const id = params;
+  console.log(`params: ${params}`);
+  // const user = fetchUser(id);
+
   return (
     <div className="flex gap-[50px] mt-3">
       <div className="flex-1 p-3 font-bold -bg--bgSoft rounded-xl -text--textSoft">
         <div className="w-full h-[400px] relative rounded-md overflow-hidden mb-3 ">
-          <Image src="/noavatar2.png" fill alt="" />
+          <Image
+            src={"/noavatar2.png"}
+            fill
+            alt=""
+            // alt={`${user.fname} ${user.lname}`}
+          />
         </div>
-        <div className="w-full text-2xl text-center">John Doe</div>
+        <div className="w-full text-2xl text-center">
+          {/* {user.fname} {user.lname} */}
+        </div>
       </div>
       <div className="flex-[2_2_0%] -bg--bgSoft p-3 rounded-xl font-bold -text--textSoft">
         <form className="flex flex-wrap justify-between">
