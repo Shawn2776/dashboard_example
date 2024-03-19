@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { fetchOrganizations } from "@/lib/data";
 import Pagination from "@/components/Pagination";
+import { deleteOrganization } from "@/lib/actions";
 
 const OrganizationPage = async ({ searchParams }) => {
   const q = searchParams?.q || "";
@@ -75,11 +76,14 @@ const OrganizationPage = async ({ searchParams }) => {
                       View
                     </button>
                   </Link>
-                  <button
-                    className={`py-2 px-3 rounded-lg text-text cursor-pointer bg-red-500`}
-                  >
-                    Delete
-                  </button>
+                  <form action={deleteOrganization}>
+                    <input type="hidden" name="id" value={org._id} />
+                    <button
+                      className={`py-2 px-3 rounded-lg text-text cursor-pointer bg-red-500`}
+                    >
+                      Delete
+                    </button>
+                  </form>
                 </div>
               </td>
             </tr>
