@@ -2,10 +2,10 @@ import Search from "@/components/Search";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { searchParams } from "next/navigation";
 import { fetchOrganizations } from "@/lib/data";
+import Pagination from "@/components/Pagination";
 
-const OrganizationPage = async () => {
+const OrganizationPage = async ({ searchParams }) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const { count, orgs } = await fetchOrganizations(q, page);
@@ -86,7 +86,7 @@ const OrganizationPage = async () => {
           ))}
         </tbody>
       </table>
-      {/* <Pagination /> */}
+      <Pagination count={count} />
     </div>
   );
 };

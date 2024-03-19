@@ -11,7 +11,7 @@ const Pagination = ({ count }) => {
   const page = searchParams.get("page") || 1;
 
   const params = new URLSearchParams(searchParams);
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 4;
 
   const hasPrev = ITEMS_PER_PAGE * (parseInt(page) - 1) > 0;
   const hasNext =

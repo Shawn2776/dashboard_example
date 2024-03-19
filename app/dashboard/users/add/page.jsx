@@ -1,4 +1,5 @@
-import { fetchOrgs, fetchUserTypes } from "@/lib/data";
+import { addUser } from "@/lib/actions";
+import { fetchOrgs, fetchUserTypes, fetchStatuses } from "@/lib/data";
 import React from "react";
 
 function capitalizeFirstLetter(string) {
@@ -8,10 +9,11 @@ function capitalizeFirstLetter(string) {
 const AddUserPage = async () => {
   const userTypes = await fetchUserTypes();
   const orgs = await fetchOrgs();
+  const statuses = await fetchStatuses();
 
   return (
     <div className="p-5 mt-5 rounded-lg bg-bgSoft">
-      <form action="" className="flex flex-wrap justify-between">
+      <form action={addUser} className="flex flex-wrap justify-between">
         <input
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
           type="text"
@@ -19,6 +21,9 @@ const AddUserPage = async () => {
           name="fname"
           id="fname"
           required
+          minLength="2"
+          pattern="[A-Za-z]+"
+          title="First name must be at least 2 characters long and contain only letters."
         />
         <input
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
@@ -27,13 +32,18 @@ const AddUserPage = async () => {
           name="lname"
           id="lname"
           required
+          minLength="2"
+          pattern="[A-Za-z]+"
+          title="Last name must be at least 2 characters long and contain only letters."
         />
         <select
-          name="org"
-          id="org"
+          name="organization"
+          id="organization"
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
+          defaultValue=""
+          required
         >
-          <option value="organization" disabled>
+          <option value="" disabled>
             Choose an Organization
           </option>
           {orgs.map((org) => (
@@ -46,8 +56,10 @@ const AddUserPage = async () => {
           name="userType"
           id="userType"
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
+          defaultValue=""
+          required
         >
-          <option disabled value="userType">
+          <option value="" disabled>
             Choose a User Type
           </option>
           {userTypes.map((type) => (
@@ -62,6 +74,8 @@ const AddUserPage = async () => {
           placeholder="Phone Number"
           name="phone"
           id="phone"
+          pattern="\d{10}"
+          title="Phone number must be 10 digits"
           required
         />
         <input
@@ -77,16 +91,16 @@ const AddUserPage = async () => {
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
           type="text"
           placeholder="Address Line 1"
-          name="addr1"
-          id="addr1"
+          name="addrLine1"
+          id="addrLine1"
           required
         />
         <input
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
           type="text"
           placeholder="Address Line 2"
-          name="addr2"
-          id="addr2"
+          name="addrLine2"
+          id="addrLine2"
         />
         <input
           type="text"
@@ -159,17 +173,37 @@ const AddUserPage = async () => {
           name="zip"
           id="zip"
           required
+          pattern="\d{5}"
+          title="Zip Code must be 5 digits"
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
         />
         <select
           name="status"
           id="status"
           className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
+          defaultValue=""
+          required
         >
-          <option value="active">Choose Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option value="" disabled>
+            Choose Status
+          </option>
+          {statuses.map((status) => (
+            <option key={status._id} value={status.status}>
+              {capitalizeFirstLetter(status.status)}
+            </option>
+          ))}
         </select>
+        <input
+          className="p-5 mb-5 border-2 rounded-md bg-bg text-text border-bgHover"
+          type="password"
+          placeholder="Password"
+          name="password"
+          id="password"
+          required
+          minLength="8"
+          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+          title="Password must be at least 8 characters long and contain at least one number, one uppercase letter, and one lowercase letter."
+        />
         <button
           type="submit"
           className="w-full p-5 rounded-lg cursor-pointer bg-button text-text"

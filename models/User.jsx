@@ -18,16 +18,19 @@ const UserSchema = new Schema(
     phone: {
       type: String,
       required: true,
+      length: 10,
     },
     password: {
       type: String,
       required: true,
+      min: 8,
+      max: 26,
     },
     organization: {
       type: String,
       required: true,
     },
-    role: {
+    userType: {
       type: String,
       required: true,
     },
@@ -54,6 +57,7 @@ const UserSchema = new Schema(
     zip: {
       type: String,
       required: true,
+      length: 5,
     },
     img: {
       type: String,

@@ -1,21 +1,31 @@
+import { addOrganization } from "@/lib/actions";
+import { fetchIndustries } from "@/lib/data";
 import React from "react";
 
-const AddOrgPage = () => {
+const AddOrgPage = async () => {
+  const industries = await fetchIndustries();
+
   return (
-    <div className="bg-bgSoft p-5 rounded-md mt-5">
-      <form action="" className="flex justify-between flex-wrap w-full">
+    <div className="p-5 mt-5 rounded-md bg-bgSoft">
+      <form
+        action={addOrganization}
+        className="flex flex-wrap justify-between w-full"
+      >
         <input
           type="text"
           placeholder="Organization Name"
           className="w-[45%] p-2 m-2"
-          name="orgName"
-          id="orgName"
+          name="name"
+          id="name"
           required
         />
         <select name="orgType" id="orgType" className="w-[45%] p-2 m-2">
           <option value="industry">Choose an Industry</option>
-          <option value="education">Education</option>
-          <option value="IT/Web">Non Education</option>
+          {industries.map((industry) => (
+            <option key={industry._id} value={industry.industry}>
+              {industry.industry}
+            </option>
+          ))}
         </select>
         <input
           type="text"
@@ -29,16 +39,16 @@ const AddOrgPage = () => {
           type="text"
           placeholder="Address Line 1"
           className="w-[45%] p-2 m-2"
-          name="addr1"
-          id="addr1"
+          name="addrLine1"
+          id="addrLine1"
           required
         />
         <input
           type="text"
           placeholder="Address Line 2"
           className="w-[45%] p-2 m-2"
-          name="addr2"
-          id="addr2"
+          name="addrLine2"
+          id="addrLine2"
         />
         <input
           type="text"
@@ -108,6 +118,7 @@ const AddOrgPage = () => {
           name="zip"
           id="zip"
           required
+          pattern="\d{5}"
         />
         <input
           type="text"
@@ -116,6 +127,7 @@ const AddOrgPage = () => {
           name="phone"
           id="phone"
           required
+          pattern="\d{10}"
         />
         <input
           type="email"

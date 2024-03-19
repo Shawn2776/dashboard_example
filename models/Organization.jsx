@@ -12,6 +12,22 @@ const OrgSchema = new Schema(
       required: true,
       unique: true,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      min: 8,
+      max: 26,
+    },
+    phone: {
+      type: String,
+      required: true,
+      length: 10,
+    },
     addrLine1: {
       type: String,
       required: true,
@@ -31,27 +47,15 @@ const OrgSchema = new Schema(
     zip: {
       type: String,
       required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    date: {
-      type: Date,
-      default: Date.now,
+      length: 5,
     },
     status: {
       type: String,
       default: "active",
+      required: true,
+    },
+    industy: {
+      type: String,
       required: true,
     },
     image: {
