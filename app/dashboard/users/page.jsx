@@ -27,7 +27,7 @@ const UsersPage = async ({ searchParams }) => {
             <th className="flex justify-start">Name/ Organization</th>
             <th>Email</th>
             <th>Created</th>
-            <th>Role</th>
+            <th>User Type</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -56,7 +56,7 @@ const UsersPage = async ({ searchParams }) => {
               </td>
               <td className="text-center">{user.email}</td>
               <td>01.13.2022</td>
-              <td className="capitalize">{user.role}</td>
+              <td className="capitalize">{user.userType}</td>
               <td>
                 <span
                   className={`${

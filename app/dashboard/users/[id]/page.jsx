@@ -1,149 +1,183 @@
-import { fetchUser } from "@/lib/data";
+import { updateUser } from "@/lib/actions";
+import { fetchStatuses, fetchUser, fetchUserTypes } from "@/lib/data";
 import Image from "next/image";
 import React from "react";
 
+function capitalizeWords(str) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 const UserPage = async ({ params }) => {
-  const id = params;
-  console.log(`params: ${params}`);
-  // const user = fetchUser(id);
+  const id = params.id;
+  const user = await fetchUser({ _id: id });
+  const userTypes = await fetchUserTypes();
+  const statuses = await fetchStatuses();
 
   return (
     <div className="flex gap-[50px] mt-3">
       <div className="flex-1 p-3 font-bold -bg--bgSoft rounded-xl -text--textSoft">
         <div className="w-full h-[400px] relative rounded-md overflow-hidden mb-3 ">
           <Image
-            src={"/noavatar2.png"}
+            src={user.img || "/noavatar2.png"}
             fill
-            alt=""
-            // alt={`${user.fname} ${user.lname}`}
+            alt={user.fname + " " + user.lname}
           />
         </div>
         <div className="w-full text-2xl text-center">
-          {/* {user.fname} {user.lname} */}
+          {user.fname} {user.lname}
         </div>
       </div>
       <div className="flex-[2_2_0%] -bg--bgSoft p-3 rounded-xl font-bold -text--textSoft">
-        <form className="flex flex-wrap justify-between">
+        <form action={updateUser} className="flex flex-wrap justify-between">
+          <input type="hidden" name="_id" value={user._id} />
           <div className="flex w-full">
             <div className="flex flex-col w-full mb-4 mr-2">
-              <label className="w-full">First Name</label>
+              <label htmlFor="fname" className="w-full">
+                First Name
+              </label>
               <input
                 type="text"
                 name="fname"
                 id="fname"
-                value="John"
                 className="w-full"
+                placeholder={user.fname}
               />
             </div>
             <div className="flex flex-col w-full">
-              <label className="w-full">Last Name</label>
+              <label htmlFor="lname" className="w-full">
+                Last Name
+              </label>
               <input
                 type="text"
                 name="lname"
                 id="lname"
-                value="Doe"
                 className="w-full"
+                placeholder={user.lname}
               />
             </div>
           </div>
           <div className="flex w-full">
             <div className="flex flex-col w-full">
-              <label className="w-full">Email</label>
+              <label htmlFor="email" className="w-full">
+                Email
+              </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                value="john@gmail.com"
                 className="w-full"
+                placeholder={user.email}
               />
             </div>
             <div className="flex flex-col w-full mb-4 ml-2">
-              <label className="w-full">Phone</label>
+              <label htmlFor="tel" className="w-full">
+                Phone
+              </label>
               <input
                 type="tel"
                 name="tel"
                 id="tel"
-                value={2085009450}
                 className="w-full"
+                placeholder={user.phone}
               />
             </div>
           </div>
 
-          <div className="flex w-full">
+          <div className="flex justify-between w-full">
             <div className="flex flex-col w-full mb-4 mr-2">
-              <label className="w-full">Organization</label>
+              <label htmlFor="org" className="w-full">
+                Organization
+              </label>
               <input
                 type="text"
                 name="org"
                 id="org"
-                value="North Idaho College"
                 className="w-full"
                 disabled
+                value={user.organization}
               />
             </div>
-            <div className="flex flex-col w-full"></div>
+            <div className="flex flex-col w-full mb-4">
+              <label htmlFor="password" className="w-full">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                className="w-full"
+              />
+            </div>
           </div>
 
           <div className="flex justify-between w-full mb-10">
             <div className="w-full mr-1">
-              <label className="w-full">Role</label>
-              <select name="role" id="role" className="w-full">
-                <option value="role">Choose a Role</option>
-                <option value="admin" selected>
-                  Admin
-                </option>
-                <option value="editor">Editor</option>
-                <option value="faculty">Faculty</option>
-                <option value="staff">Staff</option>
-                <option value="student">Student</option>
+              <label htmlFor="userType" className="w-full">
+                User Type
+              </label>
+              <select name="userType" id="userType" className="w-full">
+                {userTypes.map((type) => (
+                  <option
+                    key={type._id}
+                    value={user.userType}
+                    selected={type.userType === user.userType}
+                  >
+                    {type.userType.charAt(0).toUpperCase() +
+                      type.userType.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="w-full ml-1">
-              <label>Status</label>
+              <label htmlFor="status">Status</label>
               <select name="status" id="status" className="w-full">
-                <option value="status">Choose a Status</option>
-                <option value="active" selected>
-                  Active
-                </option>
-                <option value="inactive">Inactive</option>
+                {statuses.map((type) => (
+                  <option
+                    value={user.status}
+                    key={type._id}
+                    selected={type.status === user.status}
+                  >
+                    {type.status.charAt(0).toUpperCase() + type.status.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
-          <label>Address Line 1</label>
+          <label htmlFor="addrLine1">Address Line 1</label>
           <input
             type="text"
-            value={"2541 W. Elmwoood Drive"}
-            name="addr1"
-            id="addr1"
+            name="addrLine1"
+            id="addrLine1"
             required
             className="w-full mb-2"
+            value={user.addrLine1}
           />
-          <label>Address Line 2</label>
+          <label htmlFor="addrLine2">Address Line 2</label>
           <input
             type="text"
-            value={""}
-            name="addr2"
-            id="addr2"
+            name="addrLine2"
+            id="addrLine2"
             className="w-full mb-2"
+            value={user.adrrLine2}
           />
 
           <div className="flex justify-between w-full">
             <div className="w-[30%] flex flex-col">
-              <label>City</label>
+              <label htmlFor="city">City</label>
               <input
                 type="text"
-                value={"Coeur d'Alene"}
                 name="city"
                 id="city"
                 required
                 className="w-full"
+                value={user.city}
               />
             </div>
             <div className="w-[30%] flex flex-col">
-              <label>State</label>
+              <label htmlFor="state">State</label>
               <select name="state" id="state" className="w-full">
-                <option value="state">Choose a State</option>
+                <option value={user.state}>{user.state}</option>
                 <option value="al">AL</option>
                 <option value="ak">AK</option>
                 <option value="az">AZ</option>
@@ -155,9 +189,7 @@ const UserPage = async ({ params }) => {
                 <option value="fl">FL</option>
                 <option value="ga">GA</option>
                 <option value="hi">HI</option>
-                <option value="id" selected>
-                  ID
-                </option>
+                <option value="id">ID</option>
                 <option value="il">IL</option>
                 <option value="in">IN</option>
                 <option value="ia">IA</option>
@@ -199,14 +231,14 @@ const UserPage = async ({ params }) => {
               </select>
             </div>
             <div className="w-[30%] flex flex-col">
-              <label>Zip Code</label>
+              <label htmlFor="zip">Zip Code</label>
               <input
                 type="number"
-                value={83815}
                 name="zip"
                 id="zip"
                 required
                 className="w-full"
+                value={user.zip}
               />
             </div>
           </div>
