@@ -4,7 +4,6 @@ import React from "react";
 
 const AddOrgPage = async () => {
   const industries = await fetchIndustries();
-  console.log(industries);
 
   return (
     <div className="p-5 mt-5 rounded-md bg-bgSoft">

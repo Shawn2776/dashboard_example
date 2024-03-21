@@ -1,4 +1,5 @@
 import { authenticate } from "@/lib/actions";
+import LoginForm from "./loginForm/loginForm";
 
 const LoginPage = () => {
   return (
@@ -9,36 +10,7 @@ const LoginPage = () => {
             <span className="text-4xl text-red-500">SMRT</span> eVOTE
           </span>
         </div>
-        <form action={authenticate} className="flex flex-col gap-4">
-          <div className="px-2">
-            <label className="text-textSoft" htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              required
-              className="w-full py-3 border-none"
-            />
-          </div>
-          <div className="px-2">
-            <label className="text-textSoft" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              required
-              className="w-full py-3 border-none"
-            />
-          </div>
-          <div className="px-2 mt-4">
-            <button className="rounded-lg">Login</button>
-          </div>
-          <div></div>
-        </form>
+        <LoginForm />
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ const TestPage = () => {
     "use server";
 
     const username = formData.get("name");
-    console.log(username);
   };
 
   return (
