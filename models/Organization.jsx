@@ -54,7 +54,7 @@ const OrgSchema = new Schema(
       default: "active",
       required: true,
     },
-    industy: {
+    industry: {
       type: String,
       required: true,
     },

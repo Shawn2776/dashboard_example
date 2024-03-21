@@ -80,7 +80,7 @@ const Sidebar = () => {
     <div className="sticky top-10">
       <div className="flex items-center gap-5 mb-5">
         <Image
-          className="rounded-full object-cover"
+          className="object-cover rounded-full"
           src="/noavatar2.png"
           alt=""
           width={50}
@@ -94,7 +94,7 @@ const Sidebar = () => {
       <ul>
         {menuItems.map((item) => (
           <li key={item.title}>
-            <span className="text-textSoft font-bold text-sm mx-2 my-0">
+            <span className="mx-2 my-0 text-sm font-bold text-textSoft">
               {item.title}
             </span>
             {item.list.map((listItem) => (
@@ -103,7 +103,7 @@ const Sidebar = () => {
           </li>
         ))}
       </ul>
-      <button className="p-5 mx-1 flex items-center gap-3 cursor-pointer rounded-md bg-none border-none w-full text-text hover:bg-bgHover">
+      <button className="flex items-center w-full gap-3 p-5 mx-1 border-none rounded-md cursor-pointer bg-none text-text hover:bg-bgHover">
         <MdLogout />
         Logout
       </button>

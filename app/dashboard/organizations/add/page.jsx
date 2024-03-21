@@ -4,6 +4,7 @@ import React from "react";
 
 const AddOrgPage = async () => {
   const industries = await fetchIndustries();
+  console.log(industries);
 
   return (
     <div className="p-5 mt-5 rounded-md bg-bgSoft">
@@ -19,7 +20,7 @@ const AddOrgPage = async () => {
           id="name"
           required
         />
-        <select name="orgType" id="orgType" className="w-[45%] p-2 m-2">
+        <select name="industry" id="industry" className="w-[45%] p-2 m-2">
           <option value="industry">Choose an Industry</option>
           {industries.map((industry) => (
             <option key={industry._id} value={industry.industry}>

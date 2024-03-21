@@ -12,6 +12,7 @@ const UserPage = async ({ params }) => {
   const user = await fetchUser({ _id: id });
   const userTypes = await fetchUserTypes();
   const statuses = await fetchStatuses();
+  const newId = user._id;
 
   return (
     <div className="flex gap-[50px] mt-3">
@@ -29,7 +30,7 @@ const UserPage = async ({ params }) => {
       </div>
       <div className="flex-[2_2_0%] -bg--bgSoft p-3 rounded-xl font-bold -text--textSoft">
         <form action={updateUser} className="flex flex-wrap justify-between">
-          <input type="hidden" name="_id" value={user._id} />
+          <input type="hidden" name="_id" value={newId} />
           <div className="flex w-full">
             <div className="flex flex-col w-full mb-4 mr-2">
               <label htmlFor="fname" className="w-full">
@@ -151,7 +152,7 @@ const UserPage = async ({ params }) => {
             id="addrLine1"
             required
             className="w-full mb-2"
-            value={user.addrLine1}
+            placeholder={user.addrLine1}
           />
           <label htmlFor="addrLine2">Address Line 2</label>
           <input
@@ -159,7 +160,7 @@ const UserPage = async ({ params }) => {
             name="addrLine2"
             id="addrLine2"
             className="w-full mb-2"
-            value={user.adrrLine2}
+            placeholder={user.adrrLine2}
           />
 
           <div className="flex justify-between w-full">
@@ -171,7 +172,7 @@ const UserPage = async ({ params }) => {
                 id="city"
                 required
                 className="w-full"
-                value={user.city}
+                placeholder={user.city}
               />
             </div>
             <div className="w-[30%] flex flex-col">
@@ -238,7 +239,7 @@ const UserPage = async ({ params }) => {
                 id="zip"
                 required
                 className="w-full"
-                value={user.zip}
+                placeholder={user.zip}
               />
             </div>
           </div>

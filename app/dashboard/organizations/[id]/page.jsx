@@ -1,27 +1,41 @@
-"use client";
-
+import { updateOrganization } from "@/lib/actions";
+import { fetchIndustries, fetchOrg, fetchStatuses } from "@/lib/data";
 import Image from "next/image";
 import React from "react";
 
-const OrganizationPage = () => {
+const OrganizationPage = async ({ params }) => {
+  const id = params.id;
+  const org = await fetchOrg({ _id: id });
+  const industries = await fetchIndustries();
+  const statuses = await fetchStatuses();
+  const newId = org._id;
+
   return (
     <div className="flex gap-[50px] mt-3">
-      <div className="flex-1 -bg--bgSoft p-3 rounded-xl font-bold -text--textSoft">
+      <div className="flex-1 p-3 font-bold -bg--bgSoft rounded-xl -text--textSoft">
         <div className="w-full h-[400px] relative rounded-md overflow-hidden mb-3 ">
-          <Image src="/nic_edu.png" fill alt="" />
+          <Image
+            src={org.image || "/nic_edu.png"}
+            fill
+            alt={org.image + "'s logo or default logo"}
+          />
         </div>
-        <div className="text-center w-full text-2xl">North Idaho College</div>
+        <div className="w-full text-2xl text-center">{org.name}</div>
       </div>
       <div className="flex-[2_2_0%] -bg--bgSoft p-3 rounded-xl font-bold -text--textSoft">
-        <form className="flex flex-wrap justify-between">
-          <div className="w-full flex">
-            <div className="flex flex-col w-full mr-2 mb-4">
+        <form
+          action={updateOrganization}
+          className="flex flex-wrap justify-between"
+        >
+          <input type="hidden" name="_id" value={newId} />
+          <div className="flex w-full">
+            <div className="flex flex-col w-full mb-4 mr-2">
               <label className="w-full">Organization Name</label>
               <input
                 type="text"
                 name="org"
                 id="org"
-                value="North Idaho College"
+                placeholder={org.name}
                 className="w-full"
               />
             </div>
@@ -31,54 +45,64 @@ const OrganizationPage = () => {
                 type="text"
                 name="domain"
                 id="domain"
-                value="nic.edu"
+                placeholder={org.domain}
                 className="w-full"
               />
             </div>
           </div>
-          <div className="w-full flex">
+          <div className="flex w-full">
             <div className="flex flex-col w-full">
               <label className="w-full">Admin Email</label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                value="nic_admin@nic.edu"
+                placeholder={org.email}
                 className="w-full"
               />
             </div>
-            <div className="flex flex-col w-full ml-2 mb-4">
+            <div className="flex flex-col w-full mb-4 ml-2">
               <label className="w-full">Phone</label>
               <input
                 type="tel"
                 name="tel"
                 id="tel"
-                value={2087693294}
+                placeholder={org.phone}
                 className="w-full"
               />
             </div>
           </div>
 
-          <div className="w-full flex">
+          <div className="flex w-full">
             <div className="flex flex-col w-full">
               <label className="w-full">Industry</label>
               <select name="industry" id="industry" className="w-full">
-                <option value="industry">Choose an Industry</option>
-                <option value="education" selected>
-                  Educational
-                </option>
-                <option value="non-education">Non-Educational</option>
+                {industries.map((industry) => (
+                  <option
+                    key={industry._id}
+                    value={industry.industry}
+                    selected={industry.industry === org.industry}
+                  >
+                    {industry.industry.charAt(0).toUpperCase() +
+                      industry.industry.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div className="w-full flex flex-col ml-2 mb-10">
+            <div className="flex flex-col w-full mb-10 ml-2">
               <label>Status</label>
               <select name="status" id="status" className="w-full">
-                <option value="status">Choose a Status</option>
-                <option value="active" selected>
-                  Active
-                </option>
-                <option value="inactive">Inactive</option>
+                {statuses.map((status) => (
+                  <option
+                    key={status._id}
+                    value={status.status}
+                    selected={status.status === org.status}
+                  >
+                    {status.status.charAt(0).toUpperCase() +
+                      status.status.slice(1)}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -86,30 +110,28 @@ const OrganizationPage = () => {
           <label>Address Line 1</label>
           <input
             type="text"
-            value={"2541 W. Elmwoood Drive"}
-            name="addr1"
-            id="addr1"
-            required
+            placeholder={org.addrLine1}
+            name="addrLine1"
+            id="addrLine1"
             className="w-full mb-2"
           />
           <label>Address Line 2</label>
           <input
             type="text"
-            value={""}
-            name="addr2"
-            id="addr2"
+            placeholder={org.addrLine2}
+            name="addrLine2"
+            id="addrLine2"
             className="w-full mb-2"
           />
 
-          <div className="w-full flex justify-between">
+          <div className="flex justify-between w-full">
             <div className="w-[30%] flex flex-col">
               <label>City</label>
               <input
                 type="text"
-                value={"Coeur d'Alene"}
+                placeholder={org.city}
                 name="city"
                 id="city"
-                required
                 className="w-full"
               />
             </div>
@@ -117,68 +139,165 @@ const OrganizationPage = () => {
               <label>State</label>
               <select name="state" id="state" className="w-full">
                 <option value="state">Choose a State</option>
-                <option value="al">AL</option>
-                <option value="ak">AK</option>
-                <option value="az">AZ</option>
-                <option value="ar">AR</option>
-                <option value="ca">CA</option>
-                <option value="co">CO</option>
-                <option value="ct">CT</option>
-                <option value="de">DE</option>
-                <option value="fl">FL</option>
-                <option value="ga">GA</option>
-                <option value="hi">HI</option>
-                <option value="id" selected>
+                <option selected={org.state === "al"} value="al">
+                  AL
+                </option>
+                <option selected={org.state === "ak"} value="ak">
+                  AK
+                </option>
+                <option selected={org.state === "az"} value="az">
+                  AZ
+                </option>
+                <option selected={org.state === "ar"} value="ar">
+                  AR
+                </option>
+                <option selected={org.state === "ca"} value="ca">
+                  CA
+                </option>
+                <option selected={org.state === "co"} value="co">
+                  CO
+                </option>
+                <option selected={org.state === "ct"} value="ct">
+                  CT
+                </option>
+                <option selected={org.state === "de"} value="de">
+                  DE
+                </option>
+                <option selected={org.state === "fl"} value="fl">
+                  FL
+                </option>
+                <option selected={org.state === "ga"} value="ga">
+                  GA
+                </option>
+                <option selected={org.state === "hi"} value="hi">
+                  HI
+                </option>
+                <option selected={org.state === "id"} value="id">
                   ID
                 </option>
-                <option value="il">IL</option>
-                <option value="in">IN</option>
-                <option value="ia">IA</option>
-                <option value="ks">KS</option>
-                <option value="ky">KY</option>
-                <option value="la">LA</option>
-                <option value="me">ME</option>
-                <option value="md">MD</option>
-                <option value="ma">MA</option>
-                <option value="mi">MI</option>
-                <option value="mn">MN</option>
-                <option value="ms">MS</option>
-                <option value="mo">MO</option>
-                <option value="mt">MT</option>
-                <option value="ne">NE</option>
-                <option value="nv">NV</option>
-                <option value="nh">NH</option>
-                <option value="nj">NJ</option>
-                <option value="nm">NM</option>
-                <option value="ny">NY</option>
-                <option value="nc">NC</option>
-                <option value="nd">ND</option>
-                <option value="oh">OH</option>
-                <option value="ok">OK</option>
-                <option value="or">OR</option>
-                <option value="pa">PA</option>
-                <option value="ri">RI</option>
-                <option value="sc">SC</option>
-                <option value="sd">SD</option>
-                <option value="tn">TN</option>
-                <option value="tx">TX</option>
-                <option value="ut">UT</option>
-                <option value="vt">VT</option>
-                <option value="va">VA</option>
-                <option value="wa">WA</option>
-                <option value="wv">WV</option>
-                <option value="wi">WI</option>
-                <option value="wy">WY</option>
+                <option selected={org.state === "il"} value="il">
+                  IL
+                </option>
+                <option selected={org.state === "in"} value="in">
+                  IN
+                </option>
+                <option selected={org.state === "ia"} value="ia">
+                  IA
+                </option>
+                <option selected={org.state === "ks"} value="ks">
+                  KS
+                </option>
+                <option selected={org.state === "ky"} value="ky">
+                  KY
+                </option>
+                <option selected={org.state === "la"} value="la">
+                  LA
+                </option>
+                <option selected={org.state === "me"} value="me">
+                  ME
+                </option>
+                <option selected={org.state === "md"} value="md">
+                  MD
+                </option>
+                <option selected={org.state === "ma"} value="ma">
+                  MA
+                </option>
+                <option selected={org.state === "mi"} value="mi">
+                  MI
+                </option>
+                <option selected={org.state === "mn"} value="mn">
+                  MN
+                </option>
+                <option selected={org.state === "ms"} value="ms">
+                  MS
+                </option>
+                <option selected={org.state === "mo"} value="mo">
+                  MO
+                </option>
+                <option selected={org.state === "mt"} value="mt">
+                  MT
+                </option>
+                <option selected={org.state === "ne"} value="ne">
+                  NE
+                </option>
+                <option selected={org.state === "ny"} value="nv">
+                  NV
+                </option>
+                <option selected={org.state === "nh"} value="nh">
+                  NH
+                </option>
+                <option selected={org.state === "nj"} value="nj">
+                  NJ
+                </option>
+                <option selected={org.state === "nm"} value="nm">
+                  NM
+                </option>
+                <option selected={org.state === "ny"} value="ny">
+                  NY
+                </option>
+                <option selected={org.state === "nc"} value="nc">
+                  NC
+                </option>
+                <option selected={org.state === "nd"} value="nd">
+                  ND
+                </option>
+                <option selected={org.state === "oh"} value="oh">
+                  OH
+                </option>
+                <option selected={org.state === "ok"} value="ok">
+                  OK
+                </option>
+                <option selected={org.state === "or"} value="or">
+                  OR
+                </option>
+                <option selected={org.state === "pa"} value="pa">
+                  PA
+                </option>
+                <option selected={org.state === "ri"} value="ri">
+                  RI
+                </option>
+                <option selected={org.state === "sc"} value="sc">
+                  SC
+                </option>
+                <option selected={org.state === "sd"} value="sd">
+                  SD
+                </option>
+                <option selected={org.state === "tn"} value="tn">
+                  TN
+                </option>
+                <option selected={org.state === "tx"} value="tx">
+                  TX
+                </option>
+                <option selected={org.state === "ut"} value="ut">
+                  UT
+                </option>
+                <option selected={org.state === "vt"} value="vt">
+                  VT
+                </option>
+                <option selected={org.state === "va"} value="va">
+                  VA
+                </option>
+                <option selected={org.state === "wa"} value="wa">
+                  WA
+                </option>
+                <option selected={org.state === "wv"} value="wv">
+                  WV
+                </option>
+                <option selected={org.state === "wi"} value="wi">
+                  WI
+                </option>
+                <option selected={org.state === "wy"} value="wy">
+                  WY
+                </option>
               </select>
             </div>
             <div className="w-[30%] flex flex-col">
               <label>Zip Code</label>
               <input
                 type="number"
-                value={83815}
+                placeholder={org.zip}
                 name="zip"
                 id="zip"
-                required
                 className="w-full"
               />
             </div>
